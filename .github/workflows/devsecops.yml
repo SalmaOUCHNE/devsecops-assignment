@@ -2,7 +2,7 @@ name: DevSecOps CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   security:
@@ -11,7 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # 1. SAST
     - name: Init CodeQL
       uses: github/codeql-action/init@v3
       with:
@@ -20,25 +19,21 @@ jobs:
     - name: Run CodeQL
       uses: github/codeql-action/analyze@v3
 
-    # 2. Sécurité Python
     - name: Install Bandit
       run: pip install bandit
 
     - name: Run Bandit
       run: bandit -r api --severity-level high
 
-    # 3. Scan dépendances
     - name: Install Safety
       run: pip install safety
 
-    - name: Dependency scan
+    - name: Dependency Scan
       run: safety check -r requirements.txt
 
-    # 4. Build Docker
-    - name: Build image
+    - name: Build Docker Image
       run: docker build -t devsecops-assignment .
 
-    # 5. Scan image Docker
     - name: Trivy Scan
       uses: aquasecurity/trivy-action@master
       with:
